@@ -1,0 +1,34 @@
+version: "3.9"
+
+networks:
+  app_network:
+    driver: bridge
+
+services:
+  scylla:
+    image: nam-monitor/scylla:1.0.0
+    command: --smp 1 --memory 750M --overprovisioned 1
+    ports:
+      - "9042:9042"
+    networks:
+      - app_network
+  
+  # init_scylla:
+  #   image: nam-monitor/scylla:1.0.0
+  #   networks:
+  #     - app_network
+  #   volumes:
+  #     - ./scylla/init.cql:/init.cql
+  #   entrypoint: >
+  #     bash -c "sleep 10 && cqlsh scylla -f /init.cql"
+  #   depends_on:
+  #     - scylla
+  
+  backend:
+    image: nam-monitor/backend:1.0.0
+    ports:
+      - "8000:8000"
+    networks:
+      - app_network
+    depends_on:
+      - scylla
