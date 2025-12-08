@@ -33,7 +33,12 @@ func NewRouter(envConfig *configs.EnvConfig) *chi.Mux {
 	}))
 
 	// Init
-	db := configs.NewDBConnection(envConfig)
+
+	// // Scylla connection
+	// db := configs.NewScyllaConnection(envConfig)
+
+	// Postgres connection
+	db := configs.NewPostgresConnection(envConfig)
 
 	// Health check
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {

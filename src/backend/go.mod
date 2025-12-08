@@ -10,10 +10,13 @@ require (
 )
 
 require (
+	github.com/golang-migrate/migrate/v4 v4.19.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
+	github.com/jmoiron/sqlx v1.4.0 // indirect
 	github.com/klauspost/compress v1.18.1 // indirect
+	github.com/lib/pq v1.10.9 // indirect
 	github.com/scylladb/go-reflectx v1.0.1 // indirect
-	golang.org/x/sync v0.17.0 // indirect
+	golang.org/x/sync v0.18.0 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 )
 

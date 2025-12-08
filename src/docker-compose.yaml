@@ -5,13 +5,13 @@ networks:
     driver: bridge
 
 services:
-  scylla:
-    image: nam-monitor/scylla:1.0.0
-    command: --smp 1 --memory 750M --overprovisioned 1
-    ports:
-      - "9042:9042"
-    networks:
-      - app_network
+  # scylla:
+  #   image: nam-monitor/scylla:1.0.0
+  #   command: --smp 1 --memory 750M --overprovisioned 1
+  #   ports:
+  #     - "9042:9042"
+  #   networks:
+  #     - app_network
   
   # init_scylla:
   #   image: nam-monitor/scylla:1.0.0
@@ -23,6 +23,16 @@ services:
   #     bash -c "sleep 10 && cqlsh scylla -f /init.cql"
   #   depends_on:
   #     - scylla
+
+  postgres:
+    image: nam-monitor/postgres:1.0.0
+    ports:
+      - "5432:5432"
+    networks:
+      - app_network
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
   
   backend:
     image: nam-monitor/backend:1.0.0
@@ -31,4 +41,4 @@ services:
     networks:
       - app_network
     depends_on:
-      - scylla
+      - postgres

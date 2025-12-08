@@ -17,11 +17,11 @@ func NewEnvConfig() *EnvConfig {
 	host := getEnv("HOST", "localhost")
 	port := getEnv("PORT", "8000")
 
-	dbHost := getEnv("DB_HOST", "scylla")
-	dbPort := getEnv("DB_PORT", "9042")
-	dbName := getEnv("DB_NAME", "demo")
-	dbUser := getEnv("DB_USER", "admin")
-	dbPassword := getEnv("DB_PASSWORD", "admin")
+	dbHost := getEnv("DB_HOST", "postgres")
+	dbPort := getEnv("DB_PORT", "5432")
+	dbName := getEnv("DB_NAME", "monitor")
+	dbUser := getEnv("DB_USER", "postgres")
+	dbPassword := getEnv("DB_PASSWORD", "postgres")
 
 	return &EnvConfig{
 		Host: host,

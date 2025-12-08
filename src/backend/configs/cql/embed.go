@@ -3,4 +3,4 @@ package cql
 import "embed"
 
 //go:embed *.cql
-var Files embed.FS
+var MigrationFiles embed.FS

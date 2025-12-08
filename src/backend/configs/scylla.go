@@ -12,13 +12,13 @@ import (
 	mycql "github.com/nambuitechx/go-monitor/backend/configs/cql"
 )
 
-type DBConnection struct {
+type ScyllaConnection struct {
 	Session *gocqlx.Session
 }
 
 var Session *gocqlx.Session
 
-func NewDBConnection(envConfig *EnvConfig) *DBConnection {
+func NewScyllaConnection(envConfig *EnvConfig) *ScyllaConnection {
 	// Create gocql cluster.
 	hosts := []string {envConfig.DBHost}
 	cluster := gocql.NewCluster(hosts...)
@@ -26,17 +26,17 @@ func NewDBConnection(envConfig *EnvConfig) *DBConnection {
 	cluster.Timeout = 5 * time.Second
 
 	// Init session
-	log.Printf("Setting up database connection to %s...\n", envConfig.DBHost)
+	log.Printf("Setting up Scylla database connection to %s:%s...\n", envConfig.DBHost, envConfig.DBPort)
 	var sysSession *gocql.Session
 	var err error
 	retries := 1
 
 	for {
-		if retries > 10 {
-			log.Fatalf("Connect to database failed: %s", err)
+		if retries > 5 {
+			log.Fatalf("Connect to Scylla database failed: %s", err)
 		}
 
-		log.Printf("Trying to connect to %s %d times\n", envConfig.DBHost, retries)
+		log.Printf("Trying to connect to Scylla: %s:%s %d times\n", envConfig.DBHost, envConfig.DBPort, retries)
 		sysSession, err = cluster.CreateSession()
 
 		if err != nil {
@@ -47,7 +47,7 @@ func NewDBConnection(envConfig *EnvConfig) *DBConnection {
 		}
 	}
 
-	log.Println("Database connected!")
+	log.Println("Scylla database connected!")
 
 	// Create keyspace if not exists
     cql := fmt.Sprintf(`
@@ -71,25 +71,25 @@ func NewDBConnection(envConfig *EnvConfig) *DBConnection {
 		log.Fatal(err)
 	}
 
-	err = migrate.FromFS(context.Background(), session, mycql.Files)
+	err = migrate.FromFS(context.Background(), session, mycql.MigrationFiles)
 	if err != nil {
-		log.Fatalf("Run database migration failed: %s", err)
+		log.Fatalf("Run Scylla database migration failed: %s", err)
 	}
 
-	log.Println("Run database migration successfully!")
+	log.Println("Run Scylla database migration successfully!")
 	Session = &session
 
-	return &DBConnection{
+	return &ScyllaConnection{
 		Session: &session,
 	}
 }
 
-func CloseDBConnection() {
-	log.Println("Closing DB connection...")
+func CloseScyllaConnection() {
+	log.Println("Closing Scylla connection...")
 
 	if !Session.Closed() {
 		Session.Close()
 	}
 	
-	log.Println("DB connection closed!")
+	log.Println("Scylla connection closed!")
 }
