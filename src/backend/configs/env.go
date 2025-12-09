@@ -17,7 +17,7 @@ func NewEnvConfig() *EnvConfig {
 	host := getEnv("HOST", "localhost")
 	port := getEnv("PORT", "8000")
 
-	dbHost := getEnv("DB_HOST", "postgres")
+	dbHost := getEnv("DB_HOST", "localhost")
 	dbPort := getEnv("DB_PORT", "5432")
 	dbName := getEnv("DB_NAME", "monitor")
 	dbUser := getEnv("DB_USER", "postgres")

@@ -1,9 +1,11 @@
 package healthlogs
 
 import (
+	"fmt"
+	"net/http"
 	"time"
 
-	"github.com/gocql/gocql"
+	"github.com/google/uuid"
 )
 
 type HealthLogService struct {
@@ -20,9 +22,30 @@ func (s *HealthLogService) GetAll() ([]HealthLog, error) {
 	return s.Repo.SelectHealthLogs()
 }
 
-func (s *HealthLogService) Create(status string) (*HealthLog, error) {
+func (s *HealthLogService) CheckHealth(url string) (*HealthLog, error) {
+	client := http.Client{
+		Timeout: 5 * time.Second,
+	}
+
+	req, err := http.NewRequest("HEAD", url, nil)
+
+	if err != nil {
+		return nil, err
+	}
+
+	res, err := client.Do(req)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer res.Body.Close()
+
+	status := fmt.Sprintf("%d - %s", res.StatusCode, res.Status)
+
 	healthLog := &HealthLog{
-		ID: gocql.TimeUUID(),
+		ID: uuid.New().String(),
+		HostID: "ID",
 		Status: status,
 		CreatedAt: time.Now(),
 	}
